@@ -4,7 +4,7 @@
 noe tovar desing c# server information application
 <p align="center">
   <a href="">
-    <img src="https://github.com/noetovar5/portfolio/blob/main/my%20certifications.png?raw=true" height="25%" width="25%" alt="Youtube tutorial SQL Server Series"/>
+    <img src="https://github.com/noetovar5/portfolio/blob/main/server%20information.png?raw=true" height="25%" width="25%" alt="Youtube tutorial SQL Server Series"/>
  </a>
 </p>
 
