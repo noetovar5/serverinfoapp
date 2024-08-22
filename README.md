@@ -20,6 +20,8 @@ open a new termina in visual studio code and do the following.
 1. create folder
 2. open the form1.cs and copy this into it.
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
 using System;
 using System.IO;
 using System.Diagnostics;
@@ -47,17 +49,16 @@ namespace ServerInfoApp
             InitializeComponent();
             this.Text = "Tovar Server Information App";
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = System.Drawing.Color.FromArgb(255, 204, 229, 255); // 50% lighter shade of blue
-                                                                                
-            // Set the icon of the form
-            this.Icon = new System.Drawing.Icon("Resources/info.ico"); // Adjust the path to your icon file
+            this.BackColor = System.Drawing.Color.DarkSlateGray; // This way the form stands out as not boring. Noe Tovar
 
+            // Set the icon of the form
+            //this.Icon = new System.Drawing.Icon("info.ico"); // Adjust the path to your icon file
 
             // Initialize and configure the title label
             titleLabel = new Label();
             titleLabel.Text = "Tovar Server Information App";
-            titleLabel.Font = new System.Drawing.Font(titleLabel.Font.FontFamily, 16, System.Drawing.FontStyle.Bold);
-            titleLabel.ForeColor = System.Drawing.Color.Black;
+            titleLabel.Font = new System.Drawing.Font(titleLabel.Font.FontFamily, 18, System.Drawing.FontStyle.Bold);
+            titleLabel.ForeColor = System.Drawing.Color.White;
             titleLabel.AutoSize = true;
             titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             titleLabel.Anchor = AnchorStyles.Top;
@@ -154,6 +155,7 @@ namespace ServerInfoApp
             string hostName = Environment.MachineName;
             string userName = Environment.UserName;
             string domainName = Environment.UserDomainName;
+            string productKey = GetWindowsProductKey();
 
             // Display each type of information on a new line
             infoTextBox.Text = $"**Host Name:** {hostName}\n\n" +
@@ -161,7 +163,8 @@ namespace ServerInfoApp
                                $"**Domain Name:** {domainName}\n\n" +
                                $"**CPU:**\n{cpuInfo}\n\n" +
                                $"**RAM:**\n{ramInfo}\n\n" +
-                               $"**Operating System:**\n{osInfo}";
+                               $"**Operating System:**\n{osInfo}\n\n" +
+                               $"**Product Key:** {productKey}";
         }
 
         private void DiskInfoButton_Click(object sender, EventArgs e)
@@ -308,10 +311,26 @@ namespace ServerInfoApp
                    $"**DNS Servers:**\n{dnsServers.TrimEnd('\n')}\n" +
                    $"**UUID:** {uuid}";
         }
+
+        private string GetWindowsProductKey()
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("select * from SoftwareLicensingService");
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    return obj["OA3xOriginalProductKey"]?.ToString() ?? "Product Key not found";
+                }
+                return "Product Key not found";
+            }
+            catch (Exception ex)
+            {
+                return $"Error retrieving Product Key: {ex.Message}";
+            }
+        }
     }
 }
 
-          
 
 
 
@@ -336,5 +355,24 @@ namespace ServerInfoApp
 ######Finally you want to create a folder named Resources and add the icon into that folder 'filename.ico'
 
 
+
 then build it as an .exe file
 
+\\\\\\\\\\\\\\\\\\
+replace the content of serverinfoapp.csproj file
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>Resources\info.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
